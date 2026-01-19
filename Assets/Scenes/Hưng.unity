@@ -2214,6 +2214,7 @@ GameObject:
   - component: {fileID: 2007559556}
   - component: {fileID: 2007559555}
   - component: {fileID: 2007559557}
+  - component: {fileID: 2007559558}
   m_Layer: 0
   m_Name: Directional Light
   m_TagString: Untagged
@@ -2295,7 +2296,7 @@ Transform:
   m_GameObject: {fileID: 2007559554}
   serializedVersion: 2
   m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
-  m_LocalPosition: {x: 0, y: 3, z: 0}
+  m_LocalPosition: {x: -6.5, y: 1.9, z: -37.7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2330,6 +2331,20 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!114 &2007559558
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2007559554}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b090a857a2c44524d8fb32d5a6d0ea79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DayNight
+  sun: {fileID: 2007559555}
+  dayDuration: 60
 --- !u!1001 &2059008010
 PrefabInstance:
   m_ObjectHideFlags: 0
