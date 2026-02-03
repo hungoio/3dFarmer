@@ -29,6 +29,8 @@ public class PlantManager : MonoBehaviour
         crop.Plant(selectedCrop);
 
         tile.currentCrop = crop;
+        FarmSaveManager.Instance.SaveTile(tile);
+
     }
 
 }

@@ -30,9 +30,16 @@ public class ClickManager : MonoBehaviour
                 // THU HOẠCH
                 else if (tile.currentCrop.IsReady())
                 {
+                    // cộng tiền
+                    PlayerMoney.Instance.AddMoney(
+                        tile.currentCrop.data.sellPrice
+                    );
+
                     Destroy(tile.currentCrop.gameObject);
                     tile.currentCrop = null;
+                    FarmSaveManager.Instance.SaveTile(tile);
                 }
+
             }
         }
     }

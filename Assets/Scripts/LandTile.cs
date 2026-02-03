@@ -1,7 +1,9 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class LandTile : MonoBehaviour
 {
+    public int tileID; // 👈 GÁN TRONG INSPECTOR
+
     private Renderer rend;
     private Color defaultColor;
 
