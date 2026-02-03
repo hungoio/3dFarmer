@@ -6,8 +6,11 @@ public class LandTile : MonoBehaviour
 
     private Renderer rend;
     private Color defaultColor;
+    public int gridX;
+    public int gridZ;
 
     public CropInstance currentCrop;
+    public string SaveKey => $"Tile_{gridX}_{gridZ}";
 
     void Awake()
     {

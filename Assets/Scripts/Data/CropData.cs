@@ -7,4 +7,5 @@ public class CropData : ScriptableObject
     public float growTime;      // thời gian lớn (giây)
     public GameObject prefab;   // model cây
     public int sellPrice;
+    public int buyPrice;  // Giá mua hạt giống
 }

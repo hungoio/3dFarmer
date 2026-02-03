@@ -1,5 +1,4 @@
-using UnityEngine;
-using System;
+﻿using UnityEngine;
 
 public class FarmSaveManager : MonoBehaviour
 {
@@ -12,57 +11,37 @@ public class FarmSaveManager : MonoBehaviour
 
     public void SaveTile(LandTile tile)
     {
+        // Nếu ô đất trống -> Xóa dữ liệu cũ
         if (tile.currentCrop == null)
         {
-            PlayerPrefs.DeleteKey(GetKey(tile.tileID));
+            PlayerPrefs.DeleteKey(tile.SaveKey);
             return;
         }
 
-        string cropName = tile.currentCrop.data.cropName;
-        string plantTime = DateTime.Now.ToString("O");
-
-        string value = cropName + "|" + plantTime;
-        PlayerPrefs.SetString(GetKey(tile.tileID), value);
+        // Lưu dạng: "TenCay|ThoiGian"
+        string data = tile.currentCrop.data.cropName + "|" + tile.currentCrop.PlantTimeString;
+        PlayerPrefs.SetString(tile.SaveKey, data);
         PlayerPrefs.Save();
     }
 
-    public void LoadTile(LandTile tile, CropData[] allCrops)
+    // HÀM MỚI THÊM VÀO ĐỂ LOAD
+    public void LoadTile(LandTile tile)
     {
-        string key = GetKey(tile.tileID);
-        if (!PlayerPrefs.HasKey(key)) return;
+        if (!PlayerPrefs.HasKey(tile.SaveKey)) return;
 
-        string value = PlayerPrefs.GetString(key);
-        string[] parts = value.Split('|');
+        string data = PlayerPrefs.GetString(tile.SaveKey);
+        string[] splitData = data.Split('|'); // Tách chuỗi ra
 
-        string cropName = parts[0];
-        string plantTime = parts[1];
+        string cropName = splitData[0];
+        string timeString = splitData[1];
 
-        CropData cropData = FindCrop(cropName, allCrops);
-        if (cropData == null) return;
+        // 1. Tìm loại cây dựa trên tên
+        CropData cropType = PlantManager.Instance.GetCropByName(cropName);
 
-        GameObject obj = Instantiate(
-            cropData.prefab,
-            tile.transform.position + Vector3.up * 0.5f,
-            Quaternion.identity
-        );
-
-        CropInstance crop = obj.AddComponent<CropInstance>();
-        crop.Plant(cropData);
-        crop.SetPlantTime(plantTime);
-
-        tile.currentCrop = crop;
-    }
-
-    string GetKey(int tileID)
-    {
-        return "TILE_" + tileID;
-    }
-
-    CropData FindCrop(string name, CropData[] crops)
-    {
-        foreach (var crop in crops)
-            if (crop.cropName == name)
-                return crop;
-        return null;
+        if (cropType != null)
+        {
+            // 2. Trồng lại cây vào ô đất
+            PlantManager.Instance.SpawnCrop(tile, cropType, timeString);
+        }
     }
 }

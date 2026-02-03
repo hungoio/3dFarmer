@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using System;
+using System; // <-- Cần cái này để dùng DateTime
 
 public class CropInstance : MonoBehaviour
 {
@@ -9,15 +9,12 @@ public class CropInstance : MonoBehaviour
 
     private float growProgress;
 
-    // ⏱ THỜI GIAN TRỒNG (dạng string để save)
-    private string plantTimeString;
+    // --- 👇 PHẦN BỊ THIẾU ĐÃ ĐƯỢC THÊM VÀO 👇 ---
+    private DateTime plantTime; // Biến lưu thời gian thực
 
-    void Start()
-    {
-        // khi load lại game
-        if (!string.IsNullOrEmpty(plantTimeString))
-            UpdateGrowProgress();
-    }
+    // Property này chuyển đổi thời gian sang chuỗi để lưu vào file Save
+    public string PlantTimeString => plantTime.ToString("O");
+    // ---------------------------------------------
 
     void Update()
     {
@@ -25,7 +22,7 @@ public class CropInstance : MonoBehaviour
 
         UpdateGrowProgress();
 
-        // scale cây
+        // Scale cây lớn dần
         float scale = Mathf.Lerp(0.2f, 1f, growProgress);
         transform.localScale = Vector3.one * scale;
 
@@ -35,7 +32,7 @@ public class CropInstance : MonoBehaviour
 
     void UpdateGrowProgress()
     {
-        DateTime plantTime = DateTime.Parse(plantTimeString);
+        // Tính toán thời gian trôi qua dựa trên biến plantTime
         double elapsedSeconds = (DateTime.Now - plantTime).TotalSeconds;
 
         growProgress = Mathf.Clamp01(
@@ -43,19 +40,28 @@ public class CropInstance : MonoBehaviour
         );
     }
 
+    // Hàm gọi khi TRỒNG MỚI
     public void Plant(CropData cropData)
     {
         data = cropData;
-
-        // lưu thời điểm trồng
-        plantTimeString = DateTime.Now.ToString();
+        plantTime = DateTime.Now; // Lấy giờ hiện tại
 
         growProgress = 0f;
         transform.localScale = Vector3.one * 0.2f;
     }
+
+    // Hàm gọi khi LOAD GAME
     public void SetPlantTime(string timeString)
     {
-        plantTimeString = timeString;
+        // Chuyển chuỗi (từ file save) ngược lại thành DateTime
+        if (!string.IsNullOrEmpty(timeString))
+        {
+            plantTime = DateTime.Parse(timeString);
+        }
+        else
+        {
+            plantTime = DateTime.Now;
+        }
     }
 
     public bool IsReady()
