@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class ClickManager : MonoBehaviour
 {
@@ -14,13 +14,24 @@ public class ClickManager : MonoBehaviour
             if (Physics.Raycast(ray, out hit))
             {
                 LandTile tile = hit.collider.GetComponent<LandTile>();
-                if (tile != null)
-                {
-                    if (currentTile != null)
-                        currentTile.Deselect();
+                if (tile == null) return;
 
-                    currentTile = tile;
-                    currentTile.Select();
+                if (currentTile != null)
+                    currentTile.Deselect();
+
+                currentTile = tile;
+                currentTile.Select();
+
+                // TRỒNG
+                if (tile.IsEmpty())
+                {
+                    PlantManager.Instance.PlantCrop(tile);
+                }
+                // THU HOẠCH
+                else if (tile.currentCrop.IsReady())
+                {
+                    Destroy(tile.currentCrop.gameObject);
+                    tile.currentCrop = null;
                 }
             }
         }

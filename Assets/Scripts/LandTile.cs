@@ -5,9 +5,12 @@ public class LandTile : MonoBehaviour
     private Renderer rend;
     private Color defaultColor;
 
-    void Start()
+    public CropInstance currentCrop;
+
+    void Awake()
     {
         rend = GetComponent<Renderer>();
+        rend.material = new Material(rend.material);
         defaultColor = rend.material.color;
     }
 
@@ -19,5 +22,10 @@ public class LandTile : MonoBehaviour
     public void Deselect()
     {
         rend.material.color = defaultColor;
+    }
+
+    public bool IsEmpty()
+    {
+        return currentCrop == null;
     }
 }
