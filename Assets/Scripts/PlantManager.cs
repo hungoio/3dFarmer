@@ -18,11 +18,20 @@ public class PlantManager : MonoBehaviour
     {
         if (selectedCrop == null || !tile.IsEmpty()) return;
 
-        // Trồng cây mới
-        SpawnCrop(tile, selectedCrop, System.DateTime.Now.ToString());
+        // 👇 KIỂM TRA TÚI ĐỒ Ở ĐÂY 👇
+        // Nếu dùng thử hạt giống thành công (nghĩa là kho > 0 và đã trừ 1)
+        if (InventoryManager.Instance.TryUseSeed(selectedCrop.cropName))
+        {
+            SpawnCrop(tile, selectedCrop, System.DateTime.Now.ToString());
+            FarmSaveManager.Instance.SaveTile(tile);
 
-        // Lưu lại ngay
-        FarmSaveManager.Instance.SaveTile(tile);
+            Debug.Log("Đã trồng: " + selectedCrop.cropName);
+        }
+        else
+        {
+            Debug.Log("🚫 HẾT HẠT GIỐNG RỒI! Hãy đi mua thêm.");
+            // Gợi ý: Bạn có thể hiện thông báo UI "Hết hạt giống" ở đây
+        }
     }
 
     // Hàm này dùng chung cho cả việc Trồng Mới và Load Game
