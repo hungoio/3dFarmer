@@ -5,9 +5,11 @@ public class FarmerMovement : MonoBehaviour
 {
     public float speed = 4f;
     public float rotateSpeed = 10f;
+    public float gravity = -20f;
 
     CharacterController controller;
     Animator animator;
+    Vector3 velocity;
 
     void Awake()
     {
@@ -18,15 +20,27 @@ public class FarmerMovement : MonoBehaviour
     void Update()
     {
         Vector2 input = ReadKeyboard();
-        Vector3 move = new Vector3(input.x, 0, input.y).normalized;
+        Vector3 move = new Vector3(input.x, 0, input.y);
+        move = Vector3.ClampMagnitude(move, 1f);
 
         bool isMoving = move.sqrMagnitude > 0.01f;
         animator.SetBool("isMoving", isMoving);
 
-        if (!isMoving) return;
+        if (isMoving)
+        {
+            Rotate(move);
+        }
 
-        Rotate(move);
-        controller.Move(move * speed * Time.deltaTime);
+        // BÁM TERRAIN
+        if (controller.isGrounded && velocity.y < 0)
+            velocity.y = -5f;
+
+        velocity.y += gravity * Time.deltaTime;
+
+        Vector3 finalMove =
+            move * speed + Vector3.up * velocity.y;
+
+        controller.Move(finalMove * Time.deltaTime);
     }
 
     Vector2 ReadKeyboard()
