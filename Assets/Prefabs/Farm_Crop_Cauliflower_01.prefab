@@ -82,3 +82,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Plant
   growTime: 5
+  harvestItemId: 1
+  harvestItemName: Tomato
+  harvestItemDescription: A fresh tomato
+  harvestItemType: Vegetable
+  harvestQuantity: 1
+  plantSprite: {fileID: -1149825709, guid: 7a63dfeab23794242a4aaca4ef573d6a, type: 3}
