@@ -5,8 +5,8 @@ public class InventoryManager : MonoBehaviour
 {
     public static InventoryManager Instance;
 
-    // Dictionary để lưu: "Tên Hạt Giống" -> "Số lượng"
-    public Dictionary<string, int> seedStorage = new Dictionary<string, int>();
+    // Kho chứa chung cho TẤT CẢ (Hạt giống, Trứng, Sữa...)
+    public Dictionary<string, int> itemStorage = new Dictionary<string, int>();
 
     void Awake()
     {
@@ -15,61 +15,52 @@ public class InventoryManager : MonoBehaviour
 
     void Start()
     {
-        LoadInventory();
+        // (Tạm thời chưa cần Load để test cho nhanh, sau này thêm Load ở đây)
     }
 
-    // Hàm thêm hạt giống (khi mua)
+    // --- 👇 HÀM BỊ THIẾU (SỬA LỖI CỦA BẠN Ở ĐÂY) 👇 ---
+    public void AddItem(string itemName, int amount)
+    {
+        if (itemStorage.ContainsKey(itemName))
+            itemStorage[itemName] += amount;
+        else
+            itemStorage.Add(itemName, amount);
+
+        Debug.Log($"[Balo] Đã nhận: {amount} x {itemName}. Tổng đang có: {itemStorage[itemName]}");
+    }
+    // ------------------------------------------------
+
+    public int GetItemCount(string itemName)
+    {
+        if (itemStorage.ContainsKey(itemName))
+            return itemStorage[itemName];
+        return 0;
+    }
+
+    // --- 👇 CÁC HÀM CŨ (GIỮ LẠI ĐỂ SHOP VÀ TRỒNG CÂY KHÔNG BỊ LỖI) 👇 ---
+
+    // Hàm này cho Shop hạt giống dùng
     public void AddSeed(string cropName, int amount)
     {
-        if (seedStorage.ContainsKey(cropName))
-            seedStorage[cropName] += amount;
-        else
-            seedStorage.Add(cropName, amount);
-
-        SaveInventory(cropName);
-        Debug.Log($"Đã thêm {amount} hạt {cropName}. Tổng: {seedStorage[cropName]}");
+        // Gọi ké hàm AddItem luôn cho gọn
+        AddItem(cropName, amount);
     }
 
-    // Hàm lấy hạt giống ra dùng (khi trồng)
+    // Hàm này cho PlantManager dùng khi trồng cây
     public bool TryUseSeed(string cropName)
     {
-        if (seedStorage.ContainsKey(cropName) && seedStorage[cropName] > 0)
+        if (itemStorage.ContainsKey(cropName) && itemStorage[cropName] > 0)
         {
-            seedStorage[cropName]--;
-            SaveInventory(cropName); // Lưu lại ngay sau khi dùng
+            itemStorage[cropName]--;
+            Debug.Log($"Đã dùng 1 hạt {cropName} để trồng.");
             return true;
         }
         return false;
     }
 
-    // Hàm đếm số lượng hạt đang có
+    // Hàm này cho Shop hiển thị số lượng
     public int GetSeedCount(string cropName)
     {
-        if (seedStorage.ContainsKey(cropName))
-            return seedStorage[cropName];
-        return 0;
-    }
-
-    // --- LƯU TRỮ (Dùng PlayerPrefs) ---
-    void SaveInventory(string cropName)
-    {
-        PlayerPrefs.SetInt("SEED_" + cropName, seedStorage[cropName]);
-        PlayerPrefs.Save();
-    }
-
-    void LoadInventory()
-    {
-        // Duyệt qua tất cả loại cây có trong game để load số lượng
-        if (PlantManager.Instance != null)
-        {
-            foreach (var crop in PlantManager.Instance.allCropsLibrary)
-            {
-                int count = PlayerPrefs.GetInt("SEED_" + crop.cropName, 0); // Mặc định là 0
-                if (count > 0)
-                {
-                    seedStorage[crop.cropName] = count;
-                }
-            }
-        }
+        return GetItemCount(cropName);
     }
 }
