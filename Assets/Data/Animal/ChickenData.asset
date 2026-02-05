@@ -16,3 +16,4 @@ MonoBehaviour:
   productPrefab: {fileID: 8599300373656053707, guid: be4996a9fed9159418c877804692a6da, type: 3}
   produceTime: 5
   buyPrice: 50
+  animalPrefab: {fileID: 7486319209397436416, guid: f35b3710ddd726d4eb91a098342c52a2, type: 3}

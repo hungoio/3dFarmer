@@ -7,4 +7,5 @@ public class AnimalData : ScriptableObject
     public GameObject productPrefab; // Sản phẩm (Trứng, Sữa...)
     public float produceTime; // Thời gian đẻ (giây)
     public int buyPrice; // Giá mua
+    public GameObject animalPrefab;
 }
