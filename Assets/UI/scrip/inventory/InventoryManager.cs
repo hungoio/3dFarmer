@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 
-public class InventoryManager : MonoBehaviour
+public class InventoryManagerr : MonoBehaviour
 {
     [SerializeField]
     private CanvasGroup inventoryPanel; // Drag InventoryPanel vào đây
