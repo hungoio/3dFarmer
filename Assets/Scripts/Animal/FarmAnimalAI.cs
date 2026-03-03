@@ -1,41 +1,45 @@
 ﻿using UnityEngine;
-using ithappy.Animals_FREE; // Sử dụng thư viện của asset bạn gửi
+using ithappy.Animals_FREE;
 
 public class FarmAnimalAI : MonoBehaviour
 {
     [Header("Cài đặt")]
-    public AnimalData data; // Kéo file ChickenData vào đây
-    public float wanderRadius = 5f; // Bán kính đi dạo
-    public float waitTime = 3f; // Thời gian đứng nghỉ
+    public AnimalData data;
+    public float wanderRadius = 3f; // Giảm bán kính lại để phù hợp diện tích chuồng
+    public float waitTime = 3f;
 
-    // Bộ đếm thời gian
+    // 👇 THÊM BIẾN NÀY ĐỂ NHỚ VỊ TRÍ CHUỒNG
+    private Vector3 homePosition;
+    private bool hasHome = false;
+
     private float produceTimer;
     private float waitTimer;
-
-    // Trạng thái
     private bool isWalking = false;
     private Vector3 targetPosition;
-
-    // Tham chiếu đến script di chuyển của asset
     private CreatureMover mover;
 
     void Start()
     {
-        // Tự động tìm cái chân (CreatureMover)
         mover = GetComponent<CreatureMover>();
 
-        // Bắt đầu chọn điểm đi đầu tiên
+        // Nếu lúc sinh ra chưa được giao nhà, thì lấy vị trí hiện tại làm nhà tạm
+        if (!hasHome) SetHome(transform.position);
+
         PickNewTarget();
+    }
+
+    // 👇 HÀM MỚI: Để Chuồng gà gọi hàm này ngay khi Instantiate con gà
+    public void SetHome(Vector3 position)
+    {
+        homePosition = position;
+        hasHome = true;
     }
 
     void Update()
     {
         if (mover == null) return;
-
-        // 1. XỬ LÝ DI CHUYỂN
         HandleMovement();
 
-        // 2. XỬ LÝ ĐẺ TRỨNG
         if (data != null)
         {
             produceTimer += Time.deltaTime;
@@ -51,29 +55,20 @@ public class FarmAnimalAI : MonoBehaviour
     {
         if (isWalking)
         {
-            // Tính khoảng cách đến đích
             float distance = Vector3.Distance(new Vector3(transform.position.x, 0, transform.position.z),
                                               new Vector3(targetPosition.x, 0, targetPosition.z));
-
             if (distance > 0.5f)
             {
-                // Vẫn chưa đến nơi -> Ra lệnh đi tiếp
-                // Tham số: (Axis di chuyển, Điểm nhìn, Chạy?, Nhảy?)
-                // Axis (0, 1) nghĩa là luôn đi thẳng về phía trước mặt
                 mover.SetInput(new Vector2(0, 1), targetPosition, false, false);
             }
             else
             {
-                // Đã đến nơi -> Dừng lại
                 StopWalking();
             }
         }
         else
         {
-            // Đang đứng nghỉ
             waitTimer -= Time.deltaTime;
-
-            // Ra lệnh đứng im (Axis 0,0)
             mover.SetInput(Vector2.zero, transform.position + transform.forward, false, false);
 
             if (waitTimer <= 0)
@@ -85,9 +80,10 @@ public class FarmAnimalAI : MonoBehaviour
 
     void PickNewTarget()
     {
-        // Chọn điểm ngẫu nhiên xung quanh vị trí hiện tại
+        // 👇 THAY ĐỔI QUAN TRỌNG: Lấy vị trí ngẫu nhiên quanh homePosition (Chuồng)
+        // chứ không phải quanh transform.position (Con gà)
         Vector2 randomPoint = Random.insideUnitCircle * wanderRadius;
-        targetPosition = transform.position + new Vector3(randomPoint.x, 0, randomPoint.y);
+        targetPosition = homePosition + new Vector3(randomPoint.x, 0, randomPoint.y);
 
         isWalking = true;
     }
@@ -95,16 +91,14 @@ public class FarmAnimalAI : MonoBehaviour
     void StopWalking()
     {
         isWalking = false;
-        waitTimer = waitTime; // Đặt lại đồng hồ nghỉ
+        waitTimer = waitTime;
     }
 
     void Produce()
     {
         if (data.productPrefab != null)
         {
-            // Sinh ra trứng/sữa, nâng cao y=0.5 để không chìm xuống đất
             Instantiate(data.productPrefab, transform.position + Vector3.up * 0.5f, Quaternion.identity);
-            Debug.Log(data.animalName + " đã đẻ trứng!");
         }
     }
 }

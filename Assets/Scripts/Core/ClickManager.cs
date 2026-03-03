@@ -29,6 +29,14 @@ public class ClickManager : MonoBehaviour
                     }
                     return; // Dừng, không kiểm tra đất trồng cây nữa
                 }
+                // 👇👇 2. THÊM ĐOẠN NÀY ĐỂ CLICK VÀO CHUỒNG GÀ 👇👇
+                ChickenCoop coop = hit.collider.GetComponent<ChickenCoop>();
+                if (coop != null)
+                {
+                    coop.OnCoopClicked(); // Gọi hàm mở Menu
+                    return; // Bấm trúng chuồng rồi thì thoát, không check đất nữa
+                }
+                // 👆👆 KẾT THÚC ĐOẠN THÊM 👆👆
 
                 // --- XỬ LÝ ĐẤT TRỒNG CÂY (Giữ nguyên code cũ của bạn) ---
                 LandTile tile = hit.collider.GetComponent<LandTile>();
