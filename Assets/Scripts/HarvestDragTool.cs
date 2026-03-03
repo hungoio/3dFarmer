@@ -8,7 +8,7 @@ public class HarvestDragTool : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
     void Awake()
     {
-        // Nhớ vị trí gốc của cái rổ để khi thả tay ra nó bay về chỗ cũ
+        // Nhớ vị trí gốc của cái rổ/kéo để khi thả tay ra nó bay về chỗ cũ
         originalPosition = transform.position;
 
         // Thêm CanvasGroup để xử lý Raycast
@@ -20,32 +20,38 @@ public class HarvestDragTool : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     public void OnBeginDrag(PointerEventData eventData)
     {
         // TẮT chặn tia Raycast của UI. 
-        // Mục đích: Để tia sáng có thể xuyên qua cái Rổ và chạm vào quả Trứng 3D bên dưới.
+        // Mục đích: Để tia sáng có thể xuyên qua công cụ và chạm vào vật 3D bên dưới.
         canvasGroup.blocksRaycasts = false;
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        // 1. Cái rổ di chuyển theo ngón tay / con trỏ chuột
+        // 1. Công cụ di chuyển theo ngón tay / con trỏ chuột
         transform.position = Input.mousePosition;
 
         // 2. Bắn tia quét xuống mặt đất 3D
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
-            // Kiểm tra xem tia có cọ trúng vật phẩm nào không
+            // 👇 THÊM MỚI: Kiểm tra xem tia có quét trúng Con Cừu không
+            Shearable sheep = hit.collider.GetComponent<Shearable>();
+            if (sheep != null)
+            {
+                sheep.Collect(); // Cắt lông ngay!
+            }
+
+            // 👇 GIỮ NGUYÊN: Kiểm tra xem tia có cọ trúng Trứng/Nông sản không
             Collectable item = hit.collider.GetComponent<Collectable>();
             if (item != null)
             {
-                // Nếu cọ trúng -> Thu hoạch luôn!
-                item.Collect();
+                item.Collect(); // Nhặt đồ!
             }
         }
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        // Khi thả tay ra: Trả rổ về vị trí cũ, bật lại Raycast, ẩn Menu đi
+        // Khi thả tay ra: Trả rổ/kéo về vị trí cũ, bật lại Raycast
         transform.position = originalPosition;
         canvasGroup.blocksRaycasts = true;
 

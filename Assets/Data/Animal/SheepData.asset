@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bcac0bfd545c81a42b99788faa8ff3ea, type: 3}
+  m_Name: SheepData
+  m_EditorClassIdentifier: Assembly-CSharp::AnimalData
+  animalName: Sheep
+  productPrefab: {fileID: 6315710660791043656, guid: 04023a91f1ca220479464caff3d71955, type: 3}
+  produceTime: 6
+  buyPrice: 100
+  animalPrefab: {fileID: 1868461998570734802, guid: d4d6ee78313566d4fb5c9a6ce2e66e80, type: 3}

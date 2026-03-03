@@ -1,5 +1,6 @@
-﻿using UnityEngine;
-using ithappy.Animals_FREE;
+﻿using ithappy.Animals_FREE;
+using UnityEngine;
+using Ursaanimation.CubicFarmAnimals;
 
 public class FarmAnimalAI : MonoBehaviour
 {
@@ -19,18 +20,18 @@ public class FarmAnimalAI : MonoBehaviour
     private bool isWalking = false;
     private Vector3 targetPosition;
     private CreatureMover mover;
+    private AnimationController animControl;
+    public bool isReadyToHarvest = false;
 
     void Start()
     {
         mover = GetComponent<CreatureMover>();
+        animControl = GetComponent<AnimationController>(); // Lấy script điều khiển anim
 
-        // Nếu lúc sinh ra chưa được giao nhà, thì lấy vị trí hiện tại làm nhà tạm
         if (!hasHome) SetHome(transform.position);
-
         PickNewTarget();
     }
 
-    // 👇 HÀM MỚI: Để Chuồng gà gọi hàm này ngay khi Instantiate con gà
     public void SetHome(Vector3 position)
     {
         homePosition = position;
@@ -39,17 +40,70 @@ public class FarmAnimalAI : MonoBehaviour
 
     void Update()
     {
-        if (mover == null) return;
-        HandleMovement();
+        // QUAN TRỌNG: Nếu đang chờ thu hoạch thì dừng mọi hành động di chuyển
+        if (mover == null || isReadyToHarvest) return;
 
+        HandleMovement();
+        HandleProduction();
+    }
+
+    void HandleProduction()
+    {
         if (data != null)
         {
             produceTimer += Time.deltaTime;
             if (produceTimer >= data.produceTime)
             {
-                Produce();
-                produceTimer = 0;
+                // KIỂM TRA: Nếu là Cừu (tên trong data) thì mới ngồi chờ
+                if (data.animalName == "Sheep" || data.animalName == "Cừu")
+                {
+                    PrepareForHarvest();
+                }
+                else
+                {
+                    // Nếu là Gà: Đẻ trứng xong reset thời gian và đi tiếp luôn (Code cũ của bạn)
+                    Produce();
+                    produceTimer = 0;
+                }
             }
+        }
+    }
+
+    void PrepareForHarvest()
+    {
+        isReadyToHarvest = true;
+        isWalking = false;
+
+        // Chạy animation ngồi xuống (stand_to_sit)
+        if (animControl != null)
+        {
+            animControl.animator.Play(animControl.standtositAnimation);
+        }
+    }
+
+    // Hàm này sẽ được gọi khi bạn dùng Kéo quét qua con cừu
+    public void OnHarvested()
+    {
+        isReadyToHarvest = false; // Tắt trạng thái chờ
+        produceTimer = 0; // Reset thời gian
+
+        // Đứng dậy đi tiếp
+        if (animControl != null)
+            animControl.animator.Play(animControl.sittostandAnimation);
+
+        // CHỈ tạo ra vật phẩm, KHÔNG xóa bản thân con cừu
+        if (data.productPrefab != null)
+        {
+            Instantiate(data.productPrefab, transform.position + Vector3.up * 0.5f, Quaternion.identity);
+        }
+
+        PickNewTarget();
+    }
+    void Produce()
+    {
+        if (data.productPrefab != null)
+        {
+            Instantiate(data.productPrefab, transform.position + Vector3.up * 0.5f, Quaternion.identity);
         }
     }
 
@@ -101,13 +155,5 @@ public class FarmAnimalAI : MonoBehaviour
     {
         isWalking = false;
         waitTimer = waitTime;
-    }
-
-    void Produce()
-    {
-        if (data.productPrefab != null)
-        {
-            Instantiate(data.productPrefab, transform.position + Vector3.up * 0.5f, Quaternion.identity);
-        }
     }
 }
