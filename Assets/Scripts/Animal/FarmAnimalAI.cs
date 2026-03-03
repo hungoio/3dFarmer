@@ -7,6 +7,8 @@ public class FarmAnimalAI : MonoBehaviour
     public AnimalData data;
     public float wanderRadius = 3f; // Giảm bán kính lại để phù hợp diện tích chuồng
     public float waitTime = 3f;
+    public float maxWalkTime = 4f; // Đi quá 4 giây là bỏ cuộc
+    private float walkTimer = 0f;  // Bộ đếm thời gian đang đi
 
     // 👇 THÊM BIẾN NÀY ĐỂ NHỚ VỊ TRÍ CHUỒNG
     private Vector3 homePosition;
@@ -55,14 +57,20 @@ public class FarmAnimalAI : MonoBehaviour
     {
         if (isWalking)
         {
+            // 👇 THÊM: Tăng thời gian đã đi bộ
+            walkTimer += Time.deltaTime;
+
             float distance = Vector3.Distance(new Vector3(transform.position.x, 0, transform.position.z),
                                               new Vector3(targetPosition.x, 0, targetPosition.z));
-            if (distance > 0.5f)
+
+            // 👇 SỬA LẠI ĐIỀU KIỆN: Chỉ đi tiếp nếu chưa tới nơi VÀ chưa quá thời gian
+            if (distance > 0.5f && walkTimer < maxWalkTime)
             {
                 mover.SetInput(new Vector2(0, 1), targetPosition, false, false);
             }
             else
             {
+                // Nếu đã tới đích, HOẶC bị kẹt quá 4 giây -> Dừng lại
                 StopWalking();
             }
         }
@@ -86,6 +94,7 @@ public class FarmAnimalAI : MonoBehaviour
         targetPosition = homePosition + new Vector3(randomPoint.x, 0, randomPoint.y);
 
         isWalking = true;
+        walkTimer = 0f; // 👇 THÊM DÒNG NÀY: Reset đồng hồ khi bắt đầu đi mục tiêu mới
     }
 
     void StopWalking()

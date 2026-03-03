@@ -17,6 +17,8 @@ public class ChickenCoop : MonoBehaviour
     {
         // Ẩn Menu đi khi mới vào game
         if (buyPopupUI != null) buyPopupUI.SetActive(false);
+        // Gọi hàm đếm lại số lượng gà sau 0.2 giây (đợi SaveManager sinh ra gà xong)
+        Invoke("RecalculateChickens", 0.2f);
     }
 
     // Hàm này được ClickManager gọi khi người chơi bấm vào Chuồng
@@ -76,5 +78,37 @@ public class ChickenCoop : MonoBehaviour
     public void ClosePopup()
     {
         buyPopupUI.SetActive(false);
+    }
+    // 👇 THÊM HÀM NÀY VÀO CUỐI CHICKENCOOP.CS 👇
+    public void RecalculateChickens()
+    {
+        currentChickens = 0;
+
+        // Tìm tất cả động vật đang có trong game
+        FarmAnimalAI[] allAnimals = FindObjectsByType<FarmAnimalAI>(FindObjectsSortMode.None);
+
+        foreach (var animal in allAnimals)
+        {
+            // Kiểm tra xem có đúng là gà không
+            if (animal.data == chickenData)
+            {
+                if (currentChickens < maxCapacity)
+                {
+                    // Nếu còn chỗ thì đếm lên
+                    currentChickens++;
+                }
+                else
+                {
+                    // Nếu đã đủ 4 con rồi mà vẫn còn gà -> Xóa sổ con gà thừa này!
+                    Debug.Log("Phát hiện gà lậu! Đang tiến hành xóa bớt...");
+                    Destroy(animal.gameObject);
+                }
+            }
+        }
+
+        Debug.Log($"[Chuồng Gà] Đã dọn dẹp xong! Số gà hiện tại: {currentChickens}/{maxCapacity}");
+
+        // Cập nhật lại file Save ngay lập tức để lần sau vào game không bị sinh ra 11 con nữa
+        FarmSaveManager.Instance.SaveGame();
     }
 }
