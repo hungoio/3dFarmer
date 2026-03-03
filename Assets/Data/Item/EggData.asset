@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: EggData
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   itemName: Egg
-  icon: {fileID: 21300000, guid: 2b605e2dfa5ff7e419318b4483b17b21, type: 3}
+  icon: {fileID: 21300000, guid: 0989e72ab75aa0b4abdcf4d14c31d135, type: 3}
   sellPrice: 10

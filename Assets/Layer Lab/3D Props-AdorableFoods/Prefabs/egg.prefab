@@ -102,3 +102,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Collectable
   data: {fileID: 11400000, guid: 59814f8db833a87419d8be8bc7d290d6, type: 2}
+  amount: 1
+  popupPrefab: {fileID: 6152543796086053613, guid: 18a1d35df9e7d4441b6dc87b8d34c249, type: 3}
