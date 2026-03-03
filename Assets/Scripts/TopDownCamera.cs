@@ -2,29 +2,71 @@
 
 public class TopDownCamera : MonoBehaviour
 {
-    // Player mà camera sẽ theo
-    public Transform target;
+    [Header("Cài đặt Zoom")]
+    public float zoomSpeed = 20f;
+    public float minHeight = 5f;  // Zoom gần nhất (độ cao thấp nhất)
+    public float maxHeight = 25f; // Zoom xa nhất (độ cao cao nhất)
 
-    // Khoảng cách camera so với player
-    // Y cao để nhìn từ trên xuống
-    // Z âm để nhìn hơi chéo
-    public Vector3 offset = new Vector3(0f, 10f, -5f);
+    private Camera cam;
 
-    // Tốc độ camera theo player (càng lớn càng nhanh)
-    public float followSpeed = 10f;
+    // Mặt phẳng ảo nằm ngang ở tọa độ Y = 0 (tương đương mặt đất)
+    private Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
+    private Vector3 dragOrigin;
+
+    void Start()
+    {
+        cam = GetComponent<Camera>();
+    }
 
     void LateUpdate()
     {
-        if (target == null) return;
+        HandlePan();
+        HandleZoom();
+    }
 
-        // Vị trí mong muốn của camera
-        Vector3 desiredPosition = target.position + offset;
+    void HandlePan()
+    {
+        // Dùng chuột PHẢI (1) hoặc chuột GIỮA (2) để kéo bản đồ
+        // (Không dùng chuột trái (0) để tránh bị trùng với lúc click thu hoạch/trồng cây)
+        if (Input.GetMouseButtonDown(1))
+        {
+            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+            if (groundPlane.Raycast(ray, out float enter))
+            {
+                // Ghi nhớ điểm trên mặt đất lúc vừa bấm chuột
+                dragOrigin = ray.GetPoint(enter);
+            }
+        }
 
-        // Di chuyển camera mượt tới vị trí mong muốn
-        transform.position = Vector3.Lerp(
-            transform.position,
-            desiredPosition,
-            followSpeed * Time.deltaTime
-        );
+        if (Input.GetMouseButton(1))
+        {
+            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+            if (groundPlane.Raycast(ray, out float enter))
+            {
+                // Tính toán khoảng cách chuột đã di chuyển
+                Vector3 currentPoint = ray.GetPoint(enter);
+                Vector3 difference = dragOrigin - currentPoint;
+
+                // Kéo camera đi theo khoảng cách đó
+                transform.position += difference;
+            }
+        }
+    }
+
+    void HandleZoom()
+    {
+        float scroll = Input.GetAxis("Mouse ScrollWheel");
+        if (Mathf.Abs(scroll) > 0.01f)
+        {
+            // Trượt camera tiến/lùi dọc theo hướng nó đang nhìn
+            Vector3 move = cam.transform.forward * scroll * zoomSpeed;
+            Vector3 newPos = transform.position + move;
+
+            // Chặn không cho zoom quá gần hoặc quá xa
+            if (newPos.y >= minHeight && newPos.y <= maxHeight)
+            {
+                transform.position = newPos;
+            }
+        }
     }
 }

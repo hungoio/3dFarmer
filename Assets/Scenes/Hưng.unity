@@ -3405,6 +3405,7 @@ GameObject:
   - component: {fileID: 753089952}
   - component: {fileID: 753089955}
   - component: {fileID: 753089956}
+  - component: {fileID: 753089957}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -3480,7 +3481,7 @@ Transform:
   m_GameObject: {fileID: 753089951}
   serializedVersion: 2
   m_LocalRotation: {x: 0.38268343, y: 0, z: 0, w: 0.92387956}
-  m_LocalPosition: {x: 0, y: 40, z: -10}
+  m_LocalPosition: {x: 0, y: 12, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3542,6 +3543,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2aef053782b8a0244984fe26ddf10d18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ClickManager
+--- !u!114 &753089957
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 753089951}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a0173a79f672f3489a9a18e686c34b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TopDownCamera
+  zoomSpeed: 20
+  minHeight: 5
+  maxHeight: 25
 --- !u!4 &754544160 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 455157436203766066, guid: 1058a8aaae796e54eadd64b95de655c0, type: 3}
