@@ -2,10 +2,8 @@
 
 public class ClickManager : MonoBehaviour
 {
-    private LandTile currentTile;
-
-    // 👇 THÊM DÒNG NÀY: Kéo cái ToolPopup ở Bước 2 vào đây
-    public GameObject toolPopup;
+    public GameObject basketToolPopup; // UI Cái Rổ
+    public GameObject shearToolPopup;  // UI Cái Kéo (Mới)
 
     void Update()
     {
@@ -16,50 +14,31 @@ public class ClickManager : MonoBehaviour
 
             if (Physics.Raycast(ray, out hit))
             {
-                // --- XỬ LÝ NHẶT ĐỒ (TRỨNG/SỮA) ---
+                // 1. Kiểm tra Cừu
+                Shearable sheep = hit.collider.GetComponent<Shearable>();
+                if (sheep != null && sheep.GetComponent<FarmAnimalAI>().isReadyToHarvest)
+                {
+                    ShowTool(shearToolPopup);
+                    return;
+                }
+
+                // 2. Kiểm tra Vật phẩm rơi (Trứng)
                 Collectable item = hit.collider.GetComponent<Collectable>();
                 if (item != null)
                 {
-                    // THAY VÌ GỌI item.Collect() NHƯ CŨ, CHÚNG TA LÀM THẾ NÀY:
-                    if (toolPopup != null)
-                    {
-                        // Dời Menu Rổ tới vị trí chuột và Bật nó lên
-                        toolPopup.transform.position = Input.mousePosition;
-                        toolPopup.SetActive(true);
-                    }
-                    return; // Dừng, không kiểm tra đất trồng cây nữa
-                }
-                // 👇👇 2. THÊM ĐOẠN NÀY ĐỂ CLICK VÀO CHUỒNG GÀ 👇👇
-                ChickenCoop coop = hit.collider.GetComponent<ChickenCoop>();
-                if (coop != null)
-                {
-                    coop.OnCoopClicked(); // Gọi hàm mở Menu
-                    return; // Bấm trúng chuồng rồi thì thoát, không check đất nữa
-                }
-                // 👆👆 KẾT THÚC ĐOẠN THÊM 👆👆
-
-                // --- XỬ LÝ ĐẤT TRỒNG CÂY (Giữ nguyên code cũ của bạn) ---
-                LandTile tile = hit.collider.GetComponent<LandTile>();
-                if (tile == null) return;
-
-                if (currentTile != null)
-                    currentTile.Deselect();
-
-                currentTile = tile;
-                currentTile.Select();
-
-                if (tile.IsEmpty())
-                {
-                    PlantManager.Instance.PlantCrop(tile);
-                }
-                else if (tile.currentCrop.IsReady())
-                {
-                    PlayerMoney.Instance.AddMoney(tile.currentCrop.data.sellPrice);
-                    Destroy(tile.currentCrop.gameObject);
-                    tile.currentCrop = null;
-                    FarmSaveManager.Instance.SaveTile(tile);
+                    ShowTool(basketToolPopup);
+                    return;
                 }
             }
+        }
+    }
+
+    void ShowTool(GameObject tool)
+    {
+        if (tool != null)
+        {
+            tool.transform.position = Input.mousePosition;
+            tool.SetActive(true);
         }
     }
 }
