@@ -3,38 +3,70 @@ using System.Collections;
 
 public class RainController : MonoBehaviour
 {
-    [Header("Cấu hình trong Inspector")]
+    [Header("Cấu hình xác suất")]
     [Range(0f, 1f)]
-    public float spawnChance = 0.3f; // Tỉ lệ xuất hiện (30%)
-    public float delayTime = 30f;    // Thời gian chờ trước khi kiểm tra
-    public float rainDuration = 20f; // Thời gian mưa bật
+    public float spawnChance = 0.3f; // 30% tỉ lệ mưa
 
-    public GameObject rainEffect;    // Prefab hoặc Particle System mưa
+    [Header("Thời gian chờ giữa các lần kiểm tra")]
+    public float minDelay = 20f;     // thời gian chờ tối thiểu
+    public float maxDelay = 40f;     // thời gian chờ tối đa
+
+    [Header("Thời gian mưa")]
+    public float rainDuration = 20f; // mưa kéo dài bao lâu
+
+    [Header("Hiệu ứng mưa")]
+    public GameObject rainEffect;    // Kéo Particle System vào đây
+
+    private bool isRaining = false;
 
     void Start()
     {
+        if (rainEffect == null)
+        {
+            Debug.LogWarning("Chưa gán rainEffect!");
+            return;
+        }
+
+        rainEffect.SetActive(false);
         StartCoroutine(RainRoutine());
     }
 
     IEnumerator RainRoutine()
     {
-        // Chờ delayTime giây
-        yield return new WaitForSeconds(delayTime);
-
-        // Kiểm tra ngẫu nhiên
-        if (Random.value < spawnChance)
+        while (true)
         {
-            rainEffect.SetActive(true); // bật mưa
-            Debug.Log("Mưa đã xuất hiện!");
+            // Random thời gian chờ
+            float randomDelay = Random.Range(minDelay, maxDelay);
+            yield return new WaitForSeconds(randomDelay);
 
-            // Sau rainDuration giây thì tắt mưa
-            yield return new WaitForSeconds(rainDuration);
-            rainEffect.SetActive(false);
-            Debug.Log("Mưa đã tắt!");
+            // Nếu đang mưa thì bỏ qua (chống chồng)
+            if (isRaining)
+                continue;
+
+            // Random xác suất
+            if (Random.value < spawnChance)
+            {
+                StartCoroutine(StartRain());
+            }
+            else
+            {
+                Debug.Log("Không có mưa lần này.");
+            }
         }
-        else
-        {
-            Debug.Log("Không có mưa lần này.");
-        }
+    }
+
+    IEnumerator StartRain()
+    {
+        isRaining = true;
+
+        rainEffect.SetActive(true);
+        Debug.Log("🌧 Mưa đã bắt đầu!");
+
+        yield return new WaitForSeconds(rainDuration);
+
+        rainEffect.SetActive(false);
+        isRaining = false;
+
+        Debug.Log("☀ Mưa đã kết thúc!");
     }
 }

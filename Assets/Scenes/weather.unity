@@ -5331,6 +5331,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Particle System
       objectReference: {fileID: 0}
+    - target: {fileID: 2525866068258295597, guid: 75ed2a7bc38739d47a15983199a1b35f, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6509378561844409108, guid: 75ed2a7bc38739d47a15983199a1b35f, type: 3}
       propertyPath: m_LocalPosition.x
       value: 273.8924

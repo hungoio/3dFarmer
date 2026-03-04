@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 1380809408060229170}
   - component: {fileID: 1157022860533266508}
   - component: {fileID: 619116716642623337}
-  - component: {fileID: 5009707740176567105}
   m_Layer: 0
   m_Name: Particle System
   m_TagString: Untagged
@@ -4837,19 +4836,3 @@ ParticleSystemRenderer:
   m_MeshWeighting1: 1
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
---- !u!114 &5009707740176567105
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2199580603365209666}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76500d3bc8360d64682d4f3de0f52932, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NewMonoBehaviourScript
-  spawnChance: 0.3
-  delayTime: 30
-  rainDuration: 20
-  rainEffect: {fileID: 0}
