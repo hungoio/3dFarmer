@@ -125,3 +125,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71fcdc2fbaf1dab4b8d7ddbbc474d15e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LandTile
+  gridX: 0
+  gridZ: 0
+  currentCrop: {fileID: 0}
+  popupPrefab: {fileID: 0}
+  selectionColor: {r: 0, g: 1, b: 0, a: 1}

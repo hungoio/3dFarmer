@@ -1,10 +1,12 @@
-﻿using UnityEngine;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using TMPro;
+using UnityEngine;
 
 public class InventoryUI : MonoBehaviour
 {
     public Transform container;   // Cái lưới (Grid) để chứa các ô
     public GameObject slotPrefab; // Mẫu ô đồ (InventorySlot)
+    public TMP_Text capacityText; // Kéo cái Txt_Capacity vào đây
 
     // Danh sách TẤT CẢ vật phẩm có trong game (Bạn phải kéo EggData vào đây)
     public List<ItemData> allItems;
@@ -27,6 +29,18 @@ public class InventoryUI : MonoBehaviour
             {
                 slotScript.Setup(item);
             }
+        }
+    }
+    void Update()
+    {
+        if (InventoryManager.Instance != null && capacityText != null)
+        {
+            int total = InventoryManager.Instance.GetTotalItemCount();
+            int max = InventoryManager.Instance.maxCapacity;
+            capacityText.text = "Kho: " + total + "/" + max;
+
+            // Nếu gần đầy thì đổi sang màu đỏ cho dễ nhìn
+            capacityText.color = (total >= max) ? Color.red : Color.white;
         }
     }
 }
