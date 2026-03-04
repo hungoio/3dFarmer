@@ -5,6 +5,7 @@ PrefabImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
+<<<<<<< HEAD
 AssetOrigin:
   serializedVersion: 1
   productId: 243035
@@ -13,3 +14,5 @@ AssetOrigin:
   assetPath: Assets/AssetHunts!/GameDev Starter Kit - Farming/Asset/Prop/Animated
     Props/Props_Treasure_Cheast_01.prefab
   uploadId: 767301
+=======
+>>>>>>> 8e633e605691169d36a361bb3fa72334810f4592

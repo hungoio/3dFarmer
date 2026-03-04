@@ -112,6 +112,7 @@ TextureImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
+<<<<<<< HEAD
 AssetOrigin:
   serializedVersion: 1
   productId: 243035
@@ -119,3 +120,5 @@ AssetOrigin:
   packageVersion: v1.1.0
   assetPath: Assets/AssetHunts!/GameDev Starter Kit - Farming/Project_Icon.png
   uploadId: 767301
+=======
+>>>>>>> 8e633e605691169d36a361bb3fa72334810f4592

@@ -5,6 +5,7 @@ PrefabImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
+<<<<<<< HEAD
 AssetOrigin:
   serializedVersion: 1
   productId: 243035
@@ -12,3 +13,5 @@ AssetOrigin:
   packageVersion: v1.1.0
   assetPath: Assets/AssetHunts!/GameDev Starter Kit - Farming/Asset/Farm Crop/Farm_Crop_Broccoli_01.prefab
   uploadId: 767301
+=======
+>>>>>>> 8e633e605691169d36a361bb3fa72334810f4592
